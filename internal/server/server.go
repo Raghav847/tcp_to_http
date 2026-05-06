@@ -6,13 +6,23 @@ import (
 	"net"
 	"sync/atomic"
 
+	"github.com/Raghav847/tcp_to_http/internal/request"
 	"github.com/Raghav847/tcp_to_http/internal/response"
 )
 
 type Server struct {
 	listener net.Listener
 	closed   atomic.Bool
+	handler  Handler
 }
+
+type HandleError struct {
+	StatusCode response.StatusCode
+	Message    string
+}
+
+// start with fixing this
+type Handler func(w *response.Writer, req *request.Request) *HandleError
 
 func Serve(port int) (*Server, error) {
 	ln, err := net.Listen(
